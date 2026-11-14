@@ -1,3 +1,5 @@
+from .colors import hex_to_rgb, colorize
+
 ESC = '\x1b'
 RESET = f'{ESC}[0m'
 
@@ -9,7 +11,29 @@ REVERSE = f'{ESC}[7m'
 STRIKETHROUGH = f'{ESC}[9m'
 
 
-def style_builder(text: str, foreground: str = None, background: str = None, flags: tuple = None):
+def style_builder(text: str, foreground: str = None, background: str = None, flags: tuple | list = None, mode = "rgb"):
+  if foreground:
+    try:
+      foreground_rgb = hex_to_rgb(foreground)
+      red = int(foreground_rgb[0])
+      green = int(foreground_rgb[1])
+      blue = int(foreground_rgb[2])
+      text = f"{colorize(red, green, blue, mode, target="foreground")}{text}{RESET}"
+
+    except ValueError as e:
+      print(e)
+
+  if background:
+    try:
+      background_rgb = hex_to_rgb(background)
+      red = int(background_rgb[0])
+      green = int(background_rgb[1])
+      blue = int(background_rgb[2])
+      text = f"{colorize(red, green, blue, mode, target="background")}{text}{RESET}"
+
+    except ValueError as e:
+      print(e)
+
   try:
     if flags is not None:
       if 'bold' in flags:
@@ -36,5 +60,5 @@ def style_builder(text: str, foreground: str = None, background: str = None, fla
     return 'Error: flags must be a tuple or list'
 
 
-print(style_builder('Hello', None, None, flags=('underline', 'dim')))
+print(style_builder('Hello', "#33ff00", "#a0b0c0", flags=('strikethrough', 'underline')))
 print(style_builder('Normal text'))

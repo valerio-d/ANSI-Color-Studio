@@ -110,7 +110,6 @@ def rgb_to_16(red : int, green : int, blue : int, textOutput = True):
     else:
         return closestRGB
 
-print(rgb_to_16(255, 10, 10))
 
 def colorize(red : int, green : int, blue : int, mode = "rgb", target="foreground"):
     try:
