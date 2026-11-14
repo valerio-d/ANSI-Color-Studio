@@ -1,4 +1,4 @@
-trueColors = {
+TRUE_COLORS = {
     "red": (255, 0, 0),
     "green": (0, 255, 0),
     "blue": (0, 0, 255),
@@ -7,6 +7,25 @@ trueColors = {
     "yellow": (255, 255, 0),
     "cyan": (0, 255, 255),
     "magenta": (255, 0, 255)
+}
+
+ANSI_16_COLORS = {
+    "Black": (0, 0, 0),
+    "Red": (128, 0, 0),
+    "Green": (0, 128, 0),
+    "Yellow": (128, 128, 0),
+    "Blue": (0, 0, 128),
+    "Magenta": (128, 0, 128),
+    "Cyan": (0, 128, 128),
+    "White": (192, 192, 192),
+    "Bright Black": (128, 128, 128),
+    "Bright Red": (255, 0, 0),
+    "Bright Green": (0, 255, 0),
+    "Bright Yellow": (255, 255, 0),
+    "Bright Blue": (0, 0, 255),
+    "Bright Magenta": (255, 0, 255),
+    "Bright Cyan": (0, 255, 255),
+    "Bright White": (255, 255, 255),
 }
 
 ESC = '\x1b'
@@ -73,6 +92,26 @@ def rgb_to_256(red : int, green : int, blue : int):
     return colorCode
 
 
+def rgb_to_16(red : int, green : int, blue : int, textOutput = True):
+    closestRGB = None
+    smallestDistance = float("inf")
+
+    for key, value in ANSI_16_COLORS.items():
+        red_16, green_16, blue_16 = value
+
+        distance = ((red - red_16)**2 + (green - green_16)**2 + (blue - blue_16)**2 )**0.5 #eulidean distance
+
+        if distance < smallestDistance: #if the color is closer than the one found save it.
+            smallestDistance = distance
+            closestRGB = value
+            colorName = key
+
+    if textOutput == True:
+        return f"closest color: {colorName}, value: {closestRGB}"
+    else:
+        return {closestRGB}
+
+print(rgb_to_16(255, 10, 10))
 
 def colorize(red : int, green : int, blue : int, mode = "rgb", target="foreground"):
     try:
@@ -91,6 +130,3 @@ def colorize(red : int, green : int, blue : int, mode = "rgb", target="foregroun
     
     except ValueError:
         return("ensure that rgb is entered as a tuple and not multiple integers")
-
-
-print(colorize((16, 16, 16)) + 'hello' + RESET)
