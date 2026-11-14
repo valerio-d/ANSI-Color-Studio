@@ -31,33 +31,36 @@ ANSI_16_COLORS = {
 ESC = '\x1b'
 RESET = '\033[0m'
 
+
 def hex_to_rgb(hexCode: str):
-    try: 
-        hexCode = hexCode.strip().upper()
+    if not isinstance(hexCode, str):
+        raise TypeError("invalid hex code, hex code must be a string.")
 
-        if "#" in hexCode:
-            hexCode = hexCode.replace("#", "")
+    hexCode = hexCode.strip().upper()
 
-        if len(hexCode) == 6:
+    if "#" in hexCode:
+        hexCode = hexCode.replace("#", "")
+
+    if len(hexCode) == 6:
+        try:
             red = int(hexCode[0:2], 16)
             green = int(hexCode[2:4], 16)
             blue = int(hexCode[4:6], 16)
 
             return (red, green, blue)
+        
+        except ValueError:
+            pass
 
-        elif len(hexCode) == 3:
-            extended = ""
-            for letter in hexCode:
-                extended += letter + letter
+    elif len(hexCode) == 3:
+        extended = ""
+        for letter in hexCode:
+            extended += letter + letter
 
-            return hex_to_rgb(extended)
-            
-        else:
-            raise ValueError('Inputted hex code is incorrect. Please input a valid hex code.')
+        return hex_to_rgb(extended)
+        
 
-    except ValueError:
-        print('Inputted hex code is incorrect. Please input a valid hex code.')
-        return 'Inputted hex code is incorrect. Please input a valid hex code.'
+    raise ValueError('Inputted hex code is incorrect. Please input a valid hex code.')
 
 
 def rgb_to_hex(red : int, green : int, blue : int):
