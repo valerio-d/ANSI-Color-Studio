@@ -29,3 +29,14 @@ def hex_to_rgb(hexCode: str):
 
 
 print(hex_to_rgb("#ff8800"))
+
+def rgb_to_hex(rgb:tuple):
+    red = int(rgb[0])
+    green = int(rgb[1])
+    blue = int(rgb[2])
+
+    if not (0 <= red <= 255 and 0 <= green <= 255 and 0 <= blue <= 255):
+        raise ValueError("Invalid rgb inputted, ensure all values are greater than 0 and not greater than 255")
+
+    return f"#{red:02x}{green:02x}{blue:02x}" #x converts the integer to base 16. 02 keeps the values single-digit.
+    
