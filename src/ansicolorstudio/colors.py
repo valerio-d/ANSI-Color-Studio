@@ -44,24 +44,38 @@ def hex_to_rgb(hexCode: str):
 
 print(hex_to_rgb("#ff8800"))
 
-def rgb_to_hex(rgb:tuple):
-    red = int(rgb[0])
-    green = int(rgb[1])
-    blue = int(rgb[2])
 
+def rgb_to_hex(red : int, green : int, blue : int):
     if not (0 <= red <= 255 and 0 <= green <= 255 and 0 <= blue <= 255):
         raise ValueError("Invalid rgb inputted, ensure all values are greater than 0 and not greater than 255")
 
     return f"#{red:02x}{green:02x}{blue:02x}" #x converts the integer to base 16. 02 keeps the values single-digit.
 
 
+def rgb_to_256(red : int, green : int, blue : int):
+    #check for shades of grey:
+    if red == green and green == blue:
+        if red < 8:
+            return 16 #pure black
+        if red > 248:
+            return 231 #pure white
 
-def colorize(rgb:tuple, mode = "rgb", target="foreground"):
+        return round(((red - 8) / 247) * 24) + 232 #map the brightness to 24 grey shades (232 to 255)
+
+    #if not grey: sclae each color from 0-255 to 0-5:
+    red_small = round((red / 255) * 5)
+    green_small = round((green / 255) * 5)
+    blue_small = round((blue / 255) * 5)
+
+    #combine the small values using the 6x6x6 color cube formula:
+    colorCode = 16 + (36 * red_small) + (6 * green_small) + blue_small
+    
+    return colorCode
+
+
+
+def colorize(red : int, green : int, blue : int, mode = "rgb", target="foreground"):
     try:
-        red = int(rgb[0])
-        green = int(rgb[1])
-        blue = int(rgb[2])
-
         if not (0 <= red <= 255 and 0 <= green <= 255 and 0 <= blue <= 255):
             raise ValueError("Invalid rgb inputted, ensure all values are greater than 0 and not greater than 255")
 
