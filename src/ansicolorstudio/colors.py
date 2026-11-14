@@ -50,7 +50,6 @@ def hex_to_rgb(hexCode: str):
             for letter in hexCode:
                 extended += letter + letter
 
-            print(extended)
             return hex_to_rgb(extended)
             
         else:
@@ -59,9 +58,6 @@ def hex_to_rgb(hexCode: str):
     except ValueError:
         print('Inputted hex code is incorrect. Please input a valid hex code.')
         return 'Inputted hex code is incorrect. Please input a valid hex code.'
-
-
-print(hex_to_rgb("#ff8800"))
 
 
 def rgb_to_hex(red : int, green : int, blue : int):
@@ -79,7 +75,7 @@ def rgb_to_256(red : int, green : int, blue : int):
         if red > 248:
             return 231 #pure white
 
-        return round(((red - 8) / 247) * 24) + 232 #map the brightness to 24 grey shades (232 to 255)
+        return int(((red - 8) / 247) * 24) + 232 #map the brightness to 24 grey shades (232 to 255)
 
     #if not grey: sclae each color from 0-255 to 0-5:
     red_small = round((red / 255) * 5)
@@ -93,7 +89,7 @@ def rgb_to_256(red : int, green : int, blue : int):
 
 
 def rgb_to_16(red : int, green : int, blue : int, textOutput = True):
-    closestRGB = None
+    closestRGB = ()
     smallestDistance = float("inf")
 
     for key, value in ANSI_16_COLORS.items():
@@ -109,7 +105,7 @@ def rgb_to_16(red : int, green : int, blue : int, textOutput = True):
     if textOutput == True:
         return f"closest color: {colorName}, value: {closestRGB}"
     else:
-        return {closestRGB}
+        return closestRGB
 
 print(rgb_to_16(255, 10, 10))
 
@@ -118,7 +114,7 @@ def colorize(red : int, green : int, blue : int, mode = "rgb", target="foregroun
         if not (0 <= red <= 255 and 0 <= green <= 255 and 0 <= blue <= 255):
             raise ValueError("Invalid rgb inputted, ensure all values are greater than 0 and not greater than 255")
 
-        if target not in ["foreground", "fg", "background", "fg"]:
+        if target not in ["foreground", "fg", "background", "bg"]:
             raise ValueError("Inputted mode is invalid, please enter either foreground or background.")
 
         if target in ["background", "bg"]:
