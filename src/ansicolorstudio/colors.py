@@ -71,6 +71,9 @@ def rgb_to_hex(red : int, green : int, blue : int):
 
 
 def rgb_to_256(red : int, green : int, blue : int):
+    if not (0 <= red <= 255 and 0 <= green <= 255 and 0 <= blue <= 255):
+            raise ValueError("Invalid rgb inputted, ensure all values are greater than 0 and not greater than 255")
+    
     #check for shades of grey:
     if red == green and green == blue:
         if red < 8:
