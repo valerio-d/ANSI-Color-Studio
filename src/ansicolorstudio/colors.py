@@ -10,23 +10,24 @@ TRUE_COLORS = {
 }
 
 ANSI_16_COLORS = {
-    "Black": (0, 0, 0),
-    "Red": (128, 0, 0),
-    "Green": (0, 128, 0),
-    "Yellow": (128, 128, 0),
-    "Blue": (0, 0, 128),
-    "Magenta": (128, 0, 128),
-    "Cyan": (0, 128, 128),
-    "White": (192, 192, 192),
-    "Bright Black": (128, 128, 128),
-    "Bright Red": (255, 0, 0),
-    "Bright Green": (0, 255, 0),
-    "Bright Yellow": (255, 255, 0),
-    "Bright Blue": (0, 0, 255),
-    "Bright Magenta": (255, 0, 255),
-    "Bright Cyan": (0, 255, 255),
-    "Bright White": (255, 255, 255),
+    30: (0, 0, 0), #black
+    31: (128, 0, 0), #red
+    32: (0, 128, 0), #green
+    33: (128, 128, 0),#yellow
+    34: (0, 0, 128), #blue
+    35: (128, 0, 128), #magenta
+    36: (0, 128, 128), #cyan
+    37: (192, 192, 192), #white
+    90: (128, 128, 128), #bright black
+    91: (255, 0, 0),#bright red
+    92: (0, 255, 0), #bright green
+    93: (255, 255, 0), #bright yellow
+    94: (0, 0, 255),#bright blue
+    95: (255, 0, 255), #bright magenta
+    96: (0, 255, 255), #bright cyan
+    97: (255, 255, 255),#bright white
 }
+
 
 ESC = '\x1b'
 RESET = '\033[0m'
@@ -94,11 +95,11 @@ def rgb_to_256(red : int, green : int, blue : int):
     return colorCode
 
 
-def rgb_to_16(red : int, green : int, blue : int, textOutput = True):
-    closestRGB = ()
+def rgb_to_16(red : int, green : int, blue : int, textOutput = False):
+    closestcode = None
     smallestDistance = float("inf")
 
-    for key, value in ANSI_16_COLORS.items():
+    for code, value in ANSI_16_COLORS.items():
         red_16, green_16, blue_16 = value
 
         distance = ((red - red_16)**2 + (green - green_16)**2 + (blue - blue_16)**2 )**0.5 #eulidean distance
@@ -106,23 +107,23 @@ def rgb_to_16(red : int, green : int, blue : int, textOutput = True):
         if distance < smallestDistance: #if the color is closer than the one found save it.
             smallestDistance = distance
             closestRGB = value
-            colorName = key
+            colorCode = code
 
     if textOutput == True:
-        return f"closest color: {colorName}, value: {closestRGB}"
+        return f"closest color code: {colorCode}, value: {closestRGB}"
     else:
-        return closestRGB
+        return colorCode
 
 
-def colorize(red : int, green : int, blue : int, mode = "rgb", target="foreground"):
+def colorize(red : int, green : int, blue : int, mode = "truecolor", target="foreground"):
     if not (isinstance(red, int) and isinstance(green, int) and isinstance(blue, int)):
         raise TypeError("Incorrect data type inputted. RGB values must be integers.")
 
     if not (0 <= red <= 255 and 0 <= green <= 255 and 0 <= blue <= 255):
         raise ValueError("Invalid RGB inputted, ensure all values are greater than 0 and not greater than 255")
 
-    if mode.lower() != "rgb": #TO-DO allow mode selection (16, 255, rgb)
-        raise ValueError("Mode must be rgb.")
+    if not isinstance(mode, str):
+        raise TypeError("Invalid data type inputted. Mode must be a string.")
 
     if target.lower() not in ["foreground", "fg", "background", "bg"]:
         raise ValueError("Inputted mode is invalid, please enter either foreground or background.")
@@ -132,5 +133,15 @@ def colorize(red : int, green : int, blue : int, mode = "rgb", target="foregroun
     else:
         colorType = 38
 
-    return f"{ESC}[{colorType};2;{red};{green};{blue}m"
+    if mode == "truecolor":
+        return f"{ESC}[{colorType};2;{red};{green};{blue}m"
+
+    if mode == "256":
+        colorCode = rgb_to_256(red, green, blue)
+        return f"{ESC}[{colorType};5;{colorCode}m"
+
+    closestRGB = rgb_to_16(red, green, blue, textOutput=False)
+    colorCode = ANSI_16_COLORS[list(ANSI_16_COLORS.values()).index(closestRGB)]
+
+    return f"{ESC}[{colorCode + 10 if colorType == 48 else colorCode}m"
     
