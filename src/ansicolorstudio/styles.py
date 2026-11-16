@@ -1,4 +1,5 @@
 from .colors import hex_to_rgb, colorize
+from .detect import detect, normalize_mode
 
 ESC = '\x1b'
 RESET = f'{ESC}[0m'
@@ -10,8 +11,22 @@ UNDERLINE = f'{ESC}[4m'
 REVERSE = f'{ESC}[7m'
 STRIKETHROUGH = f'{ESC}[9m'
 
+def style(text:str, foreground: str = None, background: str = None, flags: tuple | list = None, mode = "auto"):
+  mode = normalize_mode(mode)
 
-def style_builder(text: str, foreground: str = None, background: str = None, flags: tuple | list = None, mode = "rgb"):
+  if mode == "auto":
+    mode = detect()
+
+  if mode == "none":
+    return text #return just plain text because even a reset sequence such as \x1b[0m can pollute logs, confuse terminals, violate the expectation that the color-disabled output is safe and transparent, etc.
+
+  return style_builder(text, foreground=foreground, background=background, flags=flags, mode=mode)
+
+
+def style_builder(text: str, foreground: str = None, background: str = None, flags: tuple | list = None, mode = "truecolor"):
+  if mode == "none":
+    return text
+
   if foreground:
     try:
       foreground_rgb = hex_to_rgb(foreground)
@@ -60,5 +75,4 @@ def style_builder(text: str, foreground: str = None, background: str = None, fla
     return 'Error: flags must be a tuple or list'
 
 
-print(style_builder('Hello', "#33ff00", "#a0b0c0", flags=('strikethrough', 'underline')))
-print(style_builder('Normal text'))
+print(style(text='Hello', foreground="#33ff00", flags=('strikethrough', 'underline'), mode="auto"))
