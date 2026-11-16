@@ -115,19 +115,22 @@ def rgb_to_16(red : int, green : int, blue : int, textOutput = True):
 
 
 def colorize(red : int, green : int, blue : int, mode = "rgb", target="foreground"):
-    try:
-        if not (0 <= red <= 255 and 0 <= green <= 255 and 0 <= blue <= 255):
-            raise ValueError("Invalid rgb inputted, ensure all values are greater than 0 and not greater than 255")
+    if not (isinstance(red, int) and isinstance(green, int) and isinstance(blue, int)):
+        raise TypeError("Incorrect data type inputted. RGB values must be integers.")
 
-        if target not in ["foreground", "fg", "background", "bg"]:
-            raise ValueError("Inputted mode is invalid, please enter either foreground or background.")
+    if not (0 <= red <= 255 and 0 <= green <= 255 and 0 <= blue <= 255):
+        raise ValueError("Invalid RGB inputted, ensure all values are greater than 0 and not greater than 255")
 
-        if target in ["background", "bg"]:
-            colorType = 48
-        else:
-            colorType = 38
+    if mode.lower() != "rgb": #TO-DO allow mode selection (16, 255, rgb)
+        raise ValueError("Mode must be rgb.")
 
-        return f"{ESC}[{colorType};2;{red};{green};{blue}m"
+    if target.lower() not in ["foreground", "fg", "background", "bg"]:
+        raise ValueError("Inputted mode is invalid, please enter either foreground or background.")
     
-    except ValueError:
-        return("ensure that rgb is entered as a tuple and not multiple integers")
+    if target.lower() in ["background", "bg"]:
+        colorType = 48
+    else:
+        colorType = 38
+
+    return f"{ESC}[{colorType};2;{red};{green};{blue}m"
+    
