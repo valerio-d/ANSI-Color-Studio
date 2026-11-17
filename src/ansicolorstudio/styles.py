@@ -73,6 +73,3 @@ def style_builder(text: str, foreground: str = None, background: str = None, fla
 
   except TypeError:
     return 'Error: flags must be a tuple or list'
-
-
-print(style(text='Hello', foreground="#33ff00", flags=('strikethrough', 'underline'), mode="auto"))
