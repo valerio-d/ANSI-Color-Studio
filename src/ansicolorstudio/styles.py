@@ -33,7 +33,7 @@ def style_builder(text: str, foreground: str = None, background: str = None, fla
       red = int(foreground_rgb[0])
       green = int(foreground_rgb[1])
       blue = int(foreground_rgb[2])
-      text = f"{colorize(red, green, blue, mode, target="foreground")}{text}{RESET}"
+      text = f"{colorize(red, green, blue, mode, target="foreground")}{text}"
 
     except ValueError as e:
       print(e)
@@ -44,7 +44,7 @@ def style_builder(text: str, foreground: str = None, background: str = None, fla
       red = int(background_rgb[0])
       green = int(background_rgb[1])
       blue = int(background_rgb[2])
-      text = f"{colorize(red, green, blue, mode, target="background")}{text}{RESET}"
+      text = f"{colorize(red, green, blue, mode, target="background")}{text}"
 
     except ValueError as e:
       print(e)
