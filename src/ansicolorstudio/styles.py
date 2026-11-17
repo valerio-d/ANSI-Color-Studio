@@ -32,14 +32,14 @@ def style_builder(text: str, foreground: str = None, background: str = None, fla
     red = int(foreground_rgb[0])
     green = int(foreground_rgb[1])
     blue = int(foreground_rgb[2])
-    text = f"{colorize(red, green, blue, mode, target="foreground")}{text}"
+    text = f"{colorize(red, green, blue, mode, target='foreground')}{text}"
 
   if background:
     background_rgb = hex_to_rgb(background)
     red = int(background_rgb[0])
     green = int(background_rgb[1])
     blue = int(background_rgb[2])
-    text = f"{colorize(red, green, blue, mode, target="background")}{text}"
+    text = f"{colorize(red, green, blue, mode, target='background')}{text}"
 
 
   try:
