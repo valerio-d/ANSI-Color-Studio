@@ -140,8 +140,8 @@ def colorize(red : int, green : int, blue : int, mode = "truecolor", target="for
         colorCode = rgb_to_256(red, green, blue)
         return f"{ESC}[{colorType};5;{colorCode}m"
 
-    closestRGB = rgb_to_16(red, green, blue, textOutput=False)
-    colorCode = ANSI_16_COLORS[list(ANSI_16_COLORS.values()).index(closestRGB)]
+    colorCode = rgb_to_16(red, green, blue, textOutput=False)
+    if colorType == 48:
+        colorCode += 10
 
-    return f"{ESC}[{colorCode + 10 if colorType == 48 else colorCode}m"
-    
+    return f"{ESC}[{colorCode}m"
