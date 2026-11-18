@@ -46,8 +46,8 @@ def build_parser():
     parser.add_argument("--fg", action = "store_true", help = "apply the color as a foreground instead of background")
     parser.add_argument("--bg", action = "store_true", help = "apply the color as a background instead of a foreground")
     parser.add_argument("--mode", choices = ("auto", "16", "256", "rgb", "truecolor"), default = "auto", help = "select a color mode (default: detect automatically)")
-    
-    parser.add_argument("--raw", action = "store_true", help = "print only the ANSI color sequence")
+
+    parser.add_argument("--raw", action = "store_true", default = False, help = "print only the ANSI color sequence")
 
     return parser
 
@@ -59,5 +59,6 @@ def main():
     flags = flagsBuilder(args) #get the flags as their actual name rather than a boolean
 
     
-    print(style(text = text, foreground = args.foreground, background = args.background, flags = flags, mode = args.mode))
+    print(style(text = text, foreground = args.foreground, background = args.background, flags = flags, mode = args.mode, raw = args.raw))
 
+#python -m ansicolorstudio Hello --foreground "#ff8800" --bold
