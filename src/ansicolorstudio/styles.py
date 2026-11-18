@@ -11,7 +11,7 @@ UNDERLINE = f'{ESC}[4m'
 REVERSE = f'{ESC}[7m'
 STRIKETHROUGH = f'{ESC}[9m'
 
-def style(text:str, foreground: str = None, background: str = None, flags: tuple | list = None, mode = "auto"):
+def style(text:str, foreground: str = None, background: str = None, flags: tuple | list = None, mode = "auto", raw : bool = False):
   mode = normalize_mode(mode)
 
   if mode == "auto":
@@ -20,10 +20,10 @@ def style(text:str, foreground: str = None, background: str = None, flags: tuple
   if mode == "none":
     return text #return just plain text because even a reset sequence such as \x1b[0m can pollute logs, confuse terminals, violate the expectation that the color-disabled output is safe and transparent, etc.
 
-  return style_builder(text, foreground=foreground, background=background, flags=flags, mode=mode)
+  return style_builder(text, foreground = foreground, background = background, flags = flags, mode = mode, raw = raw)
 
 
-def style_builder(text: str, foreground: str = None, background: str = None, flags: tuple | list = None, mode = "truecolor"):
+def style_builder(text: str, foreground: str = None, background: str = None, flags: tuple | list = None, mode = "truecolor", raw : bool = False):
   if mode == "none":
     return text
 
@@ -61,6 +61,9 @@ def style_builder(text: str, foreground: str = None, background: str = None, fla
 
       if 'strikethrough' in flags:
         text = f'{STRIKETHROUGH}{text}'
+
+      if raw == True:
+        return f'{repr(text+RESET)}'
 
     return f'{text}{RESET}'
 
